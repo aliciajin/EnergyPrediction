@@ -18,7 +18,6 @@ data$day<-trunc(data$date,"day")
 cityname=as.vector(unique(data$city))
 
 ##################### change to daily 
-
 data.2<-data.frame()
 for(i in 1: length(cityname)){
   tmp<-subset(data, city==cityname[i])
@@ -38,7 +37,6 @@ for (i in 1: length(cityname)){
 }
 year
 sort(table(year), decreasing=TRUE) ## 2013 appears most times, then 2012
-####
 
 data.3=subset(data.2, day>="2013-01-01" & day<="2013-12-31")
 length(unique(data.3$city)) ## 36
@@ -84,7 +82,6 @@ for (i in 1:length(cityname.12)){
 
 ###################  end 2012 %%%%%%%%%%%%%%%%%%%%
 #### only Beirut added 2012, but it is swept out because of outliers ###
-
 ## check 2011
 
 data.2$day <- as.POSIXct(strptime(data.2$day, format="%Y-%m-%d"))
@@ -101,7 +98,6 @@ for (i in 1:length(cityname.11)){
     city.kp=c(city.kp, cityname.11[i])
 }
 
-
 ### 2011
 Antigua=subset(data.3, city=="Antigua")
 Delhi=subset(data.3, city=="Delhi - BRPL")
@@ -115,13 +111,9 @@ Indianapolis=subset(data.3, city=="Indianapolis")
 ## 2006
 data.3=subset(data.2, day>="2006-01-01" & day<="2006-12-31")
 Queensland=subset(data.3, city=="Queensland")
-
 Victoria=subset(data.3, city=="Victoria")
-
 South.Australia=subset(data.3, city=="South Australia")
-
 New.South.Wales=subset(data.3, city=="New South Wales")
-
 newadd=rbind(Antigua, Delhi, Philadelphia, Detroit, Indianapolis, Queensland,
              Victoria, South.Australia, New.South.Wales)
 
@@ -139,12 +131,8 @@ data.4.2=subset(data.4.2, city!="South Australia")
 citynames=as.vector(unique(data.4.2$city))
 write.table(data.4.2,"data_30cities", sep=",")
 
-ggplot(data=data.4.2, aes(x=day, y=MW, color=city))+geom_line()+
-  facet_wrap(~city, scales="free", ncol=5)
-last_plot()+scale_x_datetime(labels = date_format("%b"))+
-  theme_minimal()+theme(legend.position = "none")
-
-
+ggplot(data=data.4.2, aes(x=day, y=MW, color=city)) + geom_line() + facet_wrap(~city, scales="free", ncol=5)
+last_plot()+scale_x_datetime(labels = date_format("%b")) + theme_minimal() + theme(legend.position = "none")
 
 #####  scale ####
 data.5=data.frame()
@@ -153,14 +141,11 @@ for (i in 1:length(citynames)){
   tmp$MW=scale(tmp$MW)
   data.5=rbind(data.5, tmp) 
 }
-
 tmp=subset(data.4.2, city=="Abidjan")
 for (i in 1:length(citynames)){
   tmp=subset(data.5, city==citynames[i])
   print(dim(tmp)) 
 }
-
-
 
 ##########################################################
 ##  with smoothing~~
@@ -187,7 +172,6 @@ for (i in 1:length(citynames)){
   tmp$day=standard
   data.5.3=rbind(data.5.3, tmp)
 }
-
 data.6=dcast(data.5.3, city~day, value.var='MW')
 rownames(data.6)=data.6[,1]
 data.6=data.6[,-1]
@@ -203,7 +187,6 @@ result[clusteris3,]=4
 result[clusteris4,]=3
 write.table(result,"result_0518.csv", sep=",")
 
-
 data.7<-data.5.3
 data.7$cluster<-"0"
 for (i in 1:nrow(result)){
@@ -212,7 +195,6 @@ for (i in 1:nrow(result)){
 }
 data.7$day=as.Date(data.7$day)
 data.7$cluster=as.factor(data.7$cluster)
-
 data.7$day <- as.POSIXct(strptime(data.7$day, format="%Y-%m-%d"))
 ggplot(data=data.7, aes(x=day, y=MW, color=city))+geom_line()+
   facet_wrap(~cluster, scales="free")
